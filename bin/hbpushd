@@ -20,6 +20,7 @@ default_location = {
         'polling': 'long',
         'create_on_get': False,
         'store': 'default',
+        'allow_origin': '*',
     },
     'publisher': {
         'create_on_post': True,

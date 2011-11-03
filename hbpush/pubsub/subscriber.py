@@ -22,10 +22,18 @@ class Subscriber(PubSubHandler):
             callback=self.async_callback(partial(self._process_channel, last_modified, etag)),
             errback=self.errback)
 
+    def options(self, channel_id):
+        self.add_accesscontrol_headers()
+
     def _process_message(self, message):
         self.set_header('Etag', message.etag)
+        # Chrome and other WebKit-based browsers do not (yet) support Access-Control-Expose-Headers,
+        # but they allow access to Cache-Control so we use it to additionally store etag information there
+        # (This field is by standard extendable with custom tokens)
+        self.set_header('Cache-Control', '%s=%s' % ('etag', message.etag))
         self.set_header('Last-Modified', formatdate(message.last_modified, localtime=False, usegmt=True))
         self.add_vary_header()
+        self.add_accesscontrol_headers()
         self.set_header('Content-Type', message.content_type)
         self.write(message.body)
         self.finish()

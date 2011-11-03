@@ -14,10 +14,17 @@ class PubSubHandler(RequestHandler):
 
     def __init__(self, *args, **kwargs):
         self.registry = kwargs.pop('registry', None)
+        self.allow_origin = kwargs.pop('allow_origin', '*')
         super(PubSubHandler, self).__init__(*args, **kwargs)
 
     def add_vary_header(self):
         self.set_header('Vary', 'If-Modified-Since, If-None-Match')
+
+    def add_accesscontrol_headers(self):
+        self.set_header('Access-Control-Allow-Origin', self.allow_origin)
+        self.set_header('Access-Control-Allow-Headers', 'If-Modified-Since, If-None-Match')
+        self.set_header('Access-Control-Expose-Headers', 'Last-Modified, Etag, Cache-Control')
+        self.set_header('Access-Control-Max-Age', '864000')
 
     def _handle_request_exception(self, e):
         if e.__class__ in self.exception_mapping:
