@@ -1,6 +1,10 @@
 from hbpush.pubsub.publisher import Publisher
 from hbpush.pubsub.subscriber import Subscriber, LongPollingSubscriber
-from tornado.httpserver import HTTPHeaders, HTTPRequest
+from tornado.httpserver import HTTPRequest
+try:
+    from tornado.httpserver import HTTPHeaders
+except ImportError:
+    from tornado.httputil import HTTPHeaders
 from tornado.web import HTTPError
 from tornado.ioloop import IOLoop
 

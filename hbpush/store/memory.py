@@ -58,8 +58,7 @@ class MemoryStore(Store):
             errback(Message.DoesNotExist())
 
     def post(self, channel_id, message, callback, errback):
-        channel_messages = self.messages.setdefault(channel_id, [])
-        self.messages[channel_id].append(message)
+        self.messages.setdefault(channel_id, []).append(message)
         self.expired_channels[channel_id] = False
         callback(message)
 

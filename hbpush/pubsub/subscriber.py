@@ -7,7 +7,7 @@ from functools import partial
 
 class Subscriber(PubSubHandler):
     def __init__(self, *args, **kwargs):
-        self.create_on_get = kwargs.pop('create_on_get', True)
+        self.create_on_get = kwargs.pop('create_on_get', False)
         super(Subscriber, self).__init__(*args, **kwargs)
 
     @asynchronous
