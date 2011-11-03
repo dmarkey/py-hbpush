@@ -9,7 +9,8 @@ import struct
 
 
 class RedisStore(Store):
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
+        super(RedisStore, self).__init__(*args, **kwargs)
         self.key_prefix = kwargs.pop('key_prefix', '')
         self.client = Client(**kwargs)
         self.client.connect()

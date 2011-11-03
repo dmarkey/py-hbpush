@@ -23,9 +23,6 @@ class Channel(object):
         # Empty message, we just want to keep etag and lastmodified data
         self.last_message = Message(0, -1)
 
-    def get_last_message(self):
-        return self.last_message
-
     def send_to_subscribers(self, message):
         # We work on a copy to deal with reentering subscribers
         subs = self.subscribers.copy()
@@ -70,9 +67,13 @@ class Channel(object):
         request_msg = Message(last_modified, etag)
 
         if request_msg < self.last_message:
-            self.store.get(self.id, last_modified, etag, callback=callback, errback=errback)
-        else:
-            errback(Channel.NotModified())
+            try:
+                self.store.get(self.id, last_modified, etag, callback=callback, errback=errback)
+                return
+            except Message.Expired:
+                pass
+        
+        errback(Channel.NotModified())
 
     def delete(self, callback, errback):
         for id, (cb, eb) in self.subscribers.items():
@@ -85,7 +86,7 @@ class Channel(object):
 
     def make_message(self, content_type, body):
         if not self.sentinel:
-            self.sentinel = self.get_last_message()
+            self.sentinel = self.last_message
 
         last_modified = int(time.time())
         if last_modified == self.sentinel.last_modified:

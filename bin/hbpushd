@@ -9,6 +9,9 @@ default_store= {
         'database': 0,
     },
     'memory': {
+        'min_messages': 0,
+        'max_messages': 0,
+        'message_timeout': 0,
     }
 }
 

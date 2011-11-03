@@ -106,7 +106,11 @@ of stores, ``memory`` and ``redis``. Each of these stores has specific options. 
 - ``key_prefix``: a string prepended to a channel identifier to make a redis key. Use this to avoid key
   collision when you're using your redis server for other stuff.
 
-Memory stores haven't any specific options (yet).
+For memory stores:
+
+- ``min_messages``: the minimum number of messages to store per channel
+- ``max_messages``: the maximum number of messages to store per channel
+- ``message_timeout``: the length of time a message may be queued before it is expired
 
 Here is an example of how to specify the store (YAML)::
 

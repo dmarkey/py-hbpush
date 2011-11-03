@@ -16,3 +16,6 @@ class Message(object):
 
     class Invalid(Exception):
         pass
+
+    class Expired(Exception):
+        pass

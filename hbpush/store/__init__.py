@@ -1,4 +1,7 @@
 class Store(object):
+    def __init__(self, *args, **kwargs):
+        pass
+
     def get(self, channel_id, last_modified, etag, callback, errback):
         raise NotImplementedError("")
 
