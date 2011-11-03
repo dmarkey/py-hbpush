@@ -161,6 +161,7 @@ A location has a ``type`` of either ``publisher`` or ``subscriber``. It supports
 - ``url``: the complete URL pattern to use for this location, eg: ``/channel/(\d+)/publish/``. Not you should have only one capture group, that must represent the channel id. This settings has precedence over ``prefix`` (not set by default)
 - ``polling`` (subscriber only): ``interval`` or ``long``, see the protocol_ for more information (default to ``long``)
 - ``create_on_post`` (publisher only): if set to ``false``, you will need to create a channel with a PUT request first before POSTing any data to it (default to ``true``)
+- ``create_on_get`` (subscriber only): if set to ``false``, a channel has to be first created before the first GET request (default to ``true``)
 
 For info, the default configuration looks like this::
 

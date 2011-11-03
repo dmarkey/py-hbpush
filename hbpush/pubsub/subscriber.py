@@ -6,6 +6,10 @@ from email.utils import formatdate, parsedate_tz, mktime_tz
 from functools import partial
 
 class Subscriber(PubSubHandler):
+    def __init__(self, *args, **kwargs):
+        self.create_on_get = kwargs.pop('create_on_get', True)
+        super(Subscriber, self).__init__(*args, **kwargs)
+
     @asynchronous
     def get(self, channel_id):
         try:
@@ -14,7 +18,7 @@ class Subscriber(PubSubHandler):
         except:
             raise HTTPError(400)
 
-        self.registry.get(channel_id,
+        getattr(self.registry, 'get_or_create' if self.create_on_get else 'get')(channel_id,
             callback=self.async_callback(partial(self._process_channel, last_modified, etag)),
             errback=self.errback)
 

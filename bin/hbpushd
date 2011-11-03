@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 ## DEFAULT CONFIGURATION ##
 default_store= {
@@ -15,6 +15,7 @@ default_store= {
 default_location = {
     'subscriber': {
         'polling': 'long',
+        'create_on_get': True,
         'store': 'default',
     },
     'publisher': {
@@ -118,7 +119,7 @@ def make_location(loc_dict, stores={}):
     else:
         raise InvalidConfigurationError('Invalid location type `%s`' % loc_type)
 
-    url = loc_conf.pop('url', loc_conf.pop('prefix')+'(.+)')
+    url = loc_conf.pop('url', loc_conf.pop('prefix', '')+'(.+)')
     store_id = loc_conf.pop('store')
     kwargs = {'registry': stores[store_id]['registry']}
     kwargs.update(loc_conf)
