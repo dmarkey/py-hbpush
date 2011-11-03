@@ -64,7 +64,8 @@ class MemoryStore(Store):
 
     def flush(self, channel_id, callback, errback):
         del self.messages[channel_id]
-        del self.expired_channels[channel_id]
+        if channel_id in self.expired_channels:
+            del self.expired_channels[channel_id]
         callback(True)
 
     def flushall(self, callback, errback):
