@@ -8,6 +8,7 @@ from functools import partial
 class Subscriber(PubSubHandler):
     def __init__(self, *args, **kwargs):
         self.create_on_get = kwargs.pop('create_on_get', False)
+        self.passthrough = kwargs.pop('passthrough', None)
         super(Subscriber, self).__init__(*args, **kwargs)
 
     @asynchronous
@@ -47,7 +48,7 @@ class Subscriber(PubSubHandler):
 class LongPollingSubscriber(Subscriber):
     def unsubscribe(self):
         if hasattr(self, 'channel'):
-            self.channel.unsubscribe(id(self))
+            self.channel.unsubscribe(id(self), self.request, self.passthrough)
     on_connection_close = unsubscribe
 
     def finish(self, chunk=None):
@@ -58,7 +59,7 @@ class LongPollingSubscriber(Subscriber):
         @self.async_callback
         def _wait_for_message(error):
             if error.__class__ == Channel.NotModified:
-                self.channel.wait_for(last_modified, etag, id(self), callback=self.async_callback(self._process_message), errback=self.errback)
+                self.channel.wait_for(last_modified, etag, self.request, self.passthrough, id(self), callback=self.async_callback(self._process_message), errback=self.errback)
             else:
                 self.errback(error)
         

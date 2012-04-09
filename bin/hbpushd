@@ -21,6 +21,8 @@ default_location = {
         'create_on_get': False,
         'store': 'default',
         'allow_origin': '*',
+        'allow_credentials': False,
+        'passthrough': None,
     },
     'publisher': {
         'create_on_post': True,

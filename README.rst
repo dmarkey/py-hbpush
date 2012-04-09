@@ -167,6 +167,8 @@ A location has a ``type`` of either ``publisher`` or ``subscriber``. It supports
 - ``create_on_post`` (publisher only): if set to ``false``, you will need to create a channel with a PUT request first before POSTing any data to it (default to ``true``)
 - ``create_on_get`` (subscriber only): if set to ``true``, a non-existing channel will be automatically created at the first GET request (default to ``false``)
 - ``allow_origin`` (subscriber only): value of ``Access-Control-Allow-Origin`` header send as defined by Cross-Origin Resource Sharing specification (default to ``*``)
+- ``allow_credentials`` (subscriber only): value of ``Access-Control-Allow-Credentials`` header send as defined by Cross-Origin Resource Sharing specification (default to ``False``); cannot be ``True`` if ``allow_origin`` is set to ``*``
+- ``passthrough`` (subscriber only): if set to an URL, client's request headers will be passthrough to the given URL every time client subscribes or unsubscribes (default to ``None``)
 
 For info, the default configuration looks like this::
 

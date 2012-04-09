@@ -15,6 +15,9 @@ class PubSubHandler(RequestHandler):
     def __init__(self, *args, **kwargs):
         self.registry = kwargs.pop('registry', None)
         self.allow_origin = kwargs.pop('allow_origin', '*')
+        self.allow_credentials = kwargs.pop('allow_credentials', False)
+        if (self.allow_origin == '*' and self.allow_credentials):
+            raise AttributeError("allow_origin cannot be '*' with allow_credentials set to true")
         super(PubSubHandler, self).__init__(*args, **kwargs)
 
     def add_vary_header(self):
@@ -22,8 +25,9 @@ class PubSubHandler(RequestHandler):
 
     def add_accesscontrol_headers(self):
         self.set_header('Access-Control-Allow-Origin', self.allow_origin)
-        self.set_header('Access-Control-Allow-Headers', 'If-Modified-Since, If-None-Match')
+        self.set_header('Access-Control-Allow-Headers', 'If-Modified-Since, If-None-Match, X-Cookie')
         self.set_header('Access-Control-Expose-Headers', 'Last-Modified, Etag, Cache-Control')
+        self.set_header('Access-Control-Allow-Credentials', 'true' if self.allow_credentials else 'false')
         self.set_header('Access-Control-Max-Age', '864000')
 
     def _handle_request_exception(self, e):
