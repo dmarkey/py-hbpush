@@ -4,6 +4,18 @@ from hbpush.channel import Channel
 
 from email.utils import formatdate, parsedate_tz, mktime_tz
 from functools import partial
+import logging
+import calendar
+
+# mktime_tz has some problems on Windows (http://bugs.python.org/issue14653),
+# so we are converting manually
+def convert_timestamp(timestamp):
+    t = parsedate_tz(timestamp)
+    if t[9] is None:
+        return mktime_tz(t)
+    else:
+        g = calendar.timegm(t[:9])
+        return g - t[9]
 
 class Subscriber(PubSubHandler):
     def __init__(self, *args, **kwargs):
@@ -15,8 +27,9 @@ class Subscriber(PubSubHandler):
     def get(self, channel_id):
         try:
             etag = int(self.request.headers.get('If-None-Match', -1))
-            last_modified = int('If-Modified-Since' in self.request.headers and mktime_tz(parsedate_tz(self.request.headers['If-Modified-Since'])) or 0)
-        except:
+            last_modified = int('If-Modified-Since' in self.request.headers and convert_timestamp(self.request.headers['If-Modified-Since']) or 0)
+        except Exception, e:
+            logging.warning('Error parsing request headers: %s', e)
             raise HTTPError(400)
 
         getattr(self.registry, 'get_or_create' if self.create_on_get else 'get')(channel_id,
