@@ -88,6 +88,7 @@ You can use the following options:
 
 - ``port``: the numeric port number to use (default to ``80``)
 - ``address``: the IP-address to bind to (default to ``''``)
+- ``servername``: server header field used in responses (default to ``None``)
 
 Example configuration (in YAML)::
 

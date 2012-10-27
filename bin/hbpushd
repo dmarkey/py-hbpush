@@ -33,6 +33,7 @@ default_location = {
 defaults = {
     'port': 80,
     'address': '',
+    'servername': None,
     'store': {
         'type': 'memory',
     },
@@ -107,7 +108,7 @@ def make_stores(stores_dict):
 from hbpush.pubsub.publisher import Publisher
 from hbpush.pubsub.subscriber import Subscriber, LongPollingSubscriber
 
-def make_location(loc_dict, stores={}):
+def make_location(loc_dict, stores={}, servername=None):
     loc_conf = default_location.get(loc_dict['type'], {}).copy()
     loc_conf.update(loc_dict)
 
@@ -127,14 +128,17 @@ def make_location(loc_dict, stores={}):
 
     url = loc_conf.pop('url', loc_conf.pop('prefix', '')+'(.+)')
     store_id = loc_conf.pop('store')
-    kwargs = {'registry': stores[store_id]['registry']}
+    kwargs = {
+        'registry': stores[store_id]['registry'],
+        'servername': servername,
+    }
     kwargs.update(loc_conf)
     return (url, cls, kwargs)
 
 
 from functools import partial
 conf['store'] = make_stores(conf['store'])
-conf['locations'] = map(partial(make_location, stores=conf['store']), conf['locations'])
+conf['locations'] = map(partial(make_location, stores=conf['store'], servername=conf['servername']), conf['locations'])
 
 from tornado.web import Application
 from tornado.httpserver import HTTPServer
