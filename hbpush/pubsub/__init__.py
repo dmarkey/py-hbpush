@@ -14,6 +14,7 @@ class PubSubHandler(RequestHandler):
 
     def __init__(self, *args, **kwargs):
         self.registry = kwargs.pop('registry', None)
+        self.servername = kwargs.pop('servername', None)
         self.allow_origin = kwargs.pop('allow_origin', '*')
         self.allow_credentials = kwargs.pop('allow_credentials', False)
         if (self.allow_origin == '*' and self.allow_credentials):
@@ -30,6 +31,10 @@ class PubSubHandler(RequestHandler):
         self.set_header('Access-Control-Allow-Credentials', 'true' if self.allow_credentials else 'false')
         self.set_header('Access-Control-Max-Age', '864000')
 
+    def set_default_headers(self):
+        if self.servername:
+            self.set_header('Server', self.servername)
+
     def _handle_request_exception(self, e):
         if e.__class__ in self.exception_mapping:
             e = HTTPError(self.exception_mapping[e.__class__], str(e))
@@ -37,7 +42,6 @@ class PubSubHandler(RequestHandler):
         super(PubSubHandler, self)._handle_request_exception(e)
 
     errback = _handle_request_exception
-
 
     def simple_finish(self, *args, **kwargs):
         # ignore everything, and just finish the request
