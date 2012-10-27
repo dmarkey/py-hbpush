@@ -108,7 +108,10 @@ def make_stores(stores_dict):
 from hbpush.pubsub.publisher import Publisher
 from hbpush.pubsub.subscriber import Subscriber, LongPollingSubscriber
 
-def make_location(loc_dict, stores={}, servername=None):
+def make_location(loc_dict, stores=None, servername=None):
+    if stores is None:
+        stores = {}
+
     loc_conf = default_location.get(loc_dict['type'], {}).copy()
     loc_conf.update(loc_dict)
 
