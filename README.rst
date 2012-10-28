@@ -242,20 +242,12 @@ Caveats
 Running Tests
 -------------
 
-Make sure you have a test redis server accessible at ``localhost:6379``. **Be careful**, the tests suite will
-flush your server default database, you've been warned.
+Make sure you have a test redis server accessible at ``localhost:6379``. **Be careful, the tests suite will
+flush your server default database, you've been warned.**
 
 Run the test suite with ::
 
     $ python setup.py nosetests
-
-Known Issues
-------------
-
-- hbpushd depends on the development version of facebook's tornado. ``setup.py`` will install a
-  compatible version, but if you have already installed tornado through ``easy_install`` or ``pip``,
-  you might have some problems with Etags, or when launching hbpushd. In that case, reinstall
-  the latest version of tornado_.
 
 Change log
 ----------
